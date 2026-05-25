@@ -1,7 +1,7 @@
 import os, shutil
 
 source_directory = "./static/"
-build_directory = "./public/"
+build_directory = "./docs/"
 
 def copy_static_to_public():
     # Clean the destination directory
