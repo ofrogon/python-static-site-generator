@@ -1,6 +1,6 @@
 import unittest
 
-from helper import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes, markdown_to_html_node
+from helper import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes, markdown_to_html_node, extract_title
 from textnode import TextNode, TextType
 
 class TestTextNode(unittest.TestCase):
@@ -152,6 +152,30 @@ class TestTextNode(unittest.TestCase):
             ],
             new_nodes,
         )
+
+
+class TestExtractTitle(unittest.TestCase):
+    def test_simple(self):
+        self.assertEqual(extract_title("# Hello"), "Hello")
+
+    def test_strips_whitespace(self):
+        self.assertEqual(extract_title("#   My Title   "), "My Title")
+
+    def test_first_h1_in_document(self):
+        md = "Some intro\n\n# The Title\n\nSome content"
+        self.assertEqual(extract_title(md), "The Title")
+
+    def test_ignores_h2_and_below(self):
+        md = "## Not a title\n### Also not\n# Real Title"
+        self.assertEqual(extract_title(md), "Real Title")
+
+    def test_no_h1_raises(self):
+        with self.assertRaises(Exception):
+            extract_title("## Only an h2\n\nSome paragraph")
+
+    def test_empty_raises(self):
+        with self.assertRaises(Exception):
+            extract_title("")
 
 
 class TestMarkdownToHtmlNode(unittest.TestCase):
